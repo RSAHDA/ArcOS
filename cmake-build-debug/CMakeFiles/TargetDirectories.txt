@@ -1,0 +1,3 @@
+C:/Users/Yaten/CLionProjects/ArcOS/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+C:/Users/Yaten/CLionProjects/ArcOS/cmake-build-debug/CMakeFiles/ArcOS.dir
+C:/Users/Yaten/CLionProjects/ArcOS/cmake-build-debug/CMakeFiles/edit_cache.dir
