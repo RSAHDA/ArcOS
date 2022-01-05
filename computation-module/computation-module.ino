@@ -1,20 +1,32 @@
-#include "libraries/memory-bus/memory-bus.h"
+#include "modules/memory-bus/memory-bus.h"
+#include "modules/command-excecuter/excecute.h"
 
 Master file_loader(8);
 
 void setup() {
   // -------------------------------------------------------------
-  // load files from flash and store in SRAM
+  // load user files from flash and store in SRAM
   // -------------------------------------------------------------
 
-  // run Master instance:
   file_loader.run();
-
-  // send initial request:
   file_loader.send_to_slave(0);
+  String user_directory_array = file_loader.request_slave();
 
-  // request slave:
-  String dirrectory-array = file_loader.request_slave();
+  // -------------------------------------------------------------
+  // run preprogramed startup software:
+  // -------------------------------------------------------------
+
+  // get first command:
+  int line = 0;
+  String line_data;
+
+  while (line_data != "STARTUP_SCRIPT_HALT()") {
+    ++line;
+    file_loader.send_to_slave(line);
+    line_data = file_loader.request_slave();
+
+    exec::find_and_execute(line_data);
+  }
 }
 
 void loop() {
