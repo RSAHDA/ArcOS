@@ -1,34 +1,11 @@
-#include "modules/memory-bus/memory-bus.h"
-#include "modules/command-excecuter/excecute.h"
+# include "modules/load_file.h"
 
-Master file_loader(8);
+FileSystem::textFile file("rishit", "Rishit is a great boy", "L:/");
 
 void setup() {
-  // -------------------------------------------------------------
-  // load user files from flash and store in SRAM
-  // -------------------------------------------------------------
-
-  file_loader.run();
-  file_loader.send_to_slave(0);
-  String user_directory_array = file_loader.request_slave();
-
-  // -------------------------------------------------------------
-  // run preprogramed startup software:
-  // -------------------------------------------------------------
-
-  // get first command:
-  int line = 0;
-  String line_data;
-
-  while (line_data != "STARTUP_SCRIPT_HALT()") {
-    ++line;
-    file_loader.send_to_slave(line);
-    line_data = file_loader.request_slave();
-
-    exec::find_and_execute(line_data);
-  }
+  Serial.begin(9600); 
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
+  Serial.println(file.returnFile());  
 }
