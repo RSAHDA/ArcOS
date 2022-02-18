@@ -1,14 +1,37 @@
-# include "modules/file_system.h"
+#include "modules/file_system.h"
+#include "modules/auth_system.h"
 
-FileSystem::textFile file("rishit", "Rishit is a great boy", "L:/");
+void userInit() {
+  if (Authenticator::isNewUser()) {
+  Serial.println("[*] NEW USER DETECTED");
+
+  Serial.print("[*] USERNAME> ");
+  while (Serial.available() == 0) {}
+  String USERNAME = Serial.readString();
+
+  Serial.print("[*] PASSWORD> ");
+  while (Serial.available() == 0) {}
+  String PASSWORD = Serial.readString();
+
+  auto AUTH = new EEPROMFileSystem::ApplicationFile(USERNAME + " " + PASSWORD, "L:/");
+  }  
+}
 
 void setup() {
-  // to always initialize for the first time:
-  EEPROM.write(0, 0);
-  // --------- rest of booting up: -----------
+  // --------- booting up: -----------
   Serial.begin(9600);
-  FileSystem::getFiles();
-  Serial.println("DONE!!!!");
+  userInit();
+  
+  Serial.println("[*] BOOTING OS...");
+  delay(1000);
+  Serial.println("[*] RETRIEVING FILES FROM MEMORY...");
+  delay(500);
+  Serial.println("[*] CHECKING BLUETOOTH MEMORY...");
+  delay(1000);
+  Serial.println("[*] COULD NOT FIND MEMORY, INITIALIZING EEPROM FOR EMERGENCY USAGE...");
+  EEPROMFileSystem::getFiles();
+  delay(500);
+
 }
 
 void loop() {
