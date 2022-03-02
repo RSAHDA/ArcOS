@@ -10,4 +10,4 @@ include_directories(computation-module/modules)
 add_executable(ArcOS
         computation-module/modules/file_system.h
         computation-module/computation-module.ino
-        computation-module/modules/auth_system.h)
+        computation-module/modules/auth_system.h computation-module/modules/user-credentials.h)

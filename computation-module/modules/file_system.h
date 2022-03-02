@@ -40,6 +40,10 @@ namespace EEPROMFileSystem {
         then it will sync file system.
     */
 
+    char *createFile(char type[4], char name[30], char data[60], char location[30]) {
+        return strcat(type, strcat("*", strcat(name, strcat("+", strcat(location, strcat("|", data))))));
+    }
+
     void getFiles() {
         // read all files and put them in MemoryPointer
         for (int i = 0; i < EEPROM.length(); ++i) {
@@ -73,13 +77,19 @@ namespace EEPROMFileSystem {
         char filename[30];
         char data[30];
         char folder[30];
+        bool fine = true;
     public:
-        textFile(char name[30] = "", char d[30] = "", char loc[30] = "", char file[97] = "") {
-            if (file[0] == '.') {
+        textFile(char name[30] = "", char d[30] = "", char loc[30] = "", bool finalize = true) {
+            if (finalize) {
                 strncpy(filename, name, 30);
                 strncpy(data, d, 30);
                 strncpy(folder, loc, 30);
-            } else {
+                fine = finalize;
+            }
+        };
+
+        void init(char file[97] = "") {
+            if (!fine) {
                 char text[strlen(file)], text2[strlen(file)];
                 bool pass1, pass2, pass3 = false;
 
@@ -108,8 +118,7 @@ namespace EEPROMFileSystem {
                 }
                 strncpy(data, text2, sizeof(text2));
             }
-
-        };
+        }
 
         String returnFile() {
             return ".txt*" + String(this->filename) + "+" + String(this->folder) + "|" + String(this->data);
@@ -132,82 +141,24 @@ namespace EEPROMFileSystem {
         };
     };
 
-    class arduinoCFile {
-    private:
-        char filename[15];
-        char data[45];
-        char folder[30];
-    public:
-        arduinoCFile(char name[15] = "", char d[45] = "", char loc[30] = "", char file[97] = "") {
-            if (file[0] != '.') {
-                strncpy(filename, name, 30);
-                strncpy(data, d, 30);
-                strncpy(folder, loc, 30);
-            } else {
-                char text[strlen(file)], text2[strlen(file)];
-                bool pass1, pass2, pass3 = false;
-
-                for (int i = 0; i < strlen(file); ++i) {
-                    if (file[i] == '*' or pass1) {
-                        memset(text, 0, sizeof(text));
-                        pass1 = true;
-                        if (file[i] == '+' or pass2) {
-                            strncpy(filename, text, sizeof(text));
-                            memset(text, 0, sizeof(text));
-                            pass2 = true;
-                            if (file[i] == '|' or pass3) {
-                                strncpy(folder, text, sizeof(text));
-                                memset(text, 0, sizeof(text));
-                                pass3 = true;
-                                text2[i] = file[i];
-                            } else {
-                                text[i] = file[i];
-                            }
-                        } else {
-                            text[i] = file[i];
-                        }
-                    } else {
-                        text[i] = file[i];
-                    }
-                }
-                strncpy(data, text2, sizeof(text2));
-            }
-        };
-
-
-        String returnFile() {
-            return ".ac*" + String(this->filename) + "+" + String(this->folder) + "|" + String(this->data);
-        };
-
-        char *returnData() {
-            return this->data;
-        };
-
-        char *returnLocation() {
-            return this->folder;
-        };
-
-        char *returnFilename() {
-            return this->filename;
-        };
-
-        char *returnFileType() {
-            return ".ac";
-        };
-    };
-
     // SYSTEM FILES:
 
     class ApplicationFile {
     private:
         char data[60];
         char folder[30];
+        bool fine = true;
     public:
-        ApplicationFile(char d[60] = "", char loc[30] = "", char file[97] = "") {
-            if (file[0] == '.') {
+        ApplicationFile(char d[60] = "", char loc[30] = "", bool finalize = true) {
+            if (finalize) {
                 strncpy(data, d, 60);
                 strncpy(folder, loc, 30);
-            } else {
+                fine = finalize;
+            }
+        };
+
+        void init(char file[97]) {
+            if (!fine) {
                 char text[strlen(file)], text2[strlen(file)];
                 bool pass1, pass2, pass3 = false;
 
@@ -232,7 +183,7 @@ namespace EEPROMFileSystem {
                 }
                 strncpy(data, text2, sizeof(text2));
             }
-        };
+        }
 
         String returnFile() {
             return ".app*+" + String(this->folder) + "|" + String(this->data);
@@ -255,12 +206,18 @@ namespace EEPROMFileSystem {
     private:
         char location[40];
         char folder[30];
+        bool fine = true;
     public:
-        LocationFile(char loc[40] = "", char fold[30] = "", char file[97] = "") {
-            if (file[0] == '.') {
+        LocationFile(char loc[40] = "", char fold[30] = "", bool finalize = true) {
+            if (finalize) {
                 strncpy(location, loc, 60);
                 strncpy(folder, fold, 30);
-            } else {
+                fine = finalize;
+            }
+        };
+
+        void init(char file[97]) {
+            if (!fine) {
                 char text[strlen(file)], text2[strlen(file)];
                 bool pass1, pass2, pass3 = false;
 
@@ -284,9 +241,8 @@ namespace EEPROMFileSystem {
                         text[i] = file[i];
                     }
                 }
-                strncpy(loc, text2, sizeof(text2));
             }
-        };
+        }
 
         String returnFile() {
             return ".loc*+" + String(this->folder) + "|" + String(this->location);
