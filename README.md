@@ -11,3 +11,6 @@ The usage is very simple:
 4. After it says (BOOTING OS), this may look like bad practice, put in the wire from pin 11, and RESET during its bootup process.
 
 **ArcOS is now ready on your Arduino Uno for basic usage!**
+
+## Major Note:
+This project has been halted due to not enough coders. More coders are needed to continue the project.
